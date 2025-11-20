@@ -1,66 +1,89 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
 
-export default function Home() {
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import styles from "./login.module.css";
+
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (password.length < 2) {
+      setError('Invalid password format.');
+      return;
+    }
+
+    const lastTwo = password.slice(-2);
+    const suitChar = lastTwo[0];
+    const rankChar = lastTwo[1];
+
+    // Parse Rank first to check for Joker
+    const rank = parseInt(rankChar, 16);
+    
+    // Valid ranks: 1-9, a-d (10-13), e (14 - Joker)
+    if (isNaN(rank) || rank < 1 || rank > 14) {
+       setError('Incorrect username or password.');
+       return;
+    }
+
+    // Validate Suit ONLY if not Joker (rank 14)
+    if (rank !== 14) {
+      const suit = parseInt(suitChar, 10);
+      if (isNaN(suit) || suit < 0 || suit > 3) {
+        setError('Incorrect username or password.');
+        return;
+      }
+    }
+
+    // Store in sessionStorage and redirect
+    sessionStorage.setItem('card_suit', suitChar);
+    sessionStorage.setItem('card_rank', rankChar);
+    router.push('/landing');
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className={styles.container}>
+      <div className={styles.card}>
+        <h1 className={styles.title}>Welcome</h1>
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.inputGroup}>
+            <label htmlFor="email" className={styles.label}>
+              Username or email address
+            </label>
+            <input
+              id="email"
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={styles.input}
+              required
             />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+          </div>
+          <div className={styles.inputGroup}>
+            <label htmlFor="password" className={styles.label}>
+              Password
+            </label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={styles.input}
+              required
+            />
+          </div>
+          {error && <div className={styles.error}>{error}</div>}
+          <button type="submit" className={styles.button}>
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
