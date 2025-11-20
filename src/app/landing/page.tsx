@@ -23,14 +23,14 @@ function LandingContent() {
     const isJoker = rank === 14; // 'e' is 14
 
     let suitLetter = '';
-    
+
     // Only map suit if NOT a Joker
     if (!isJoker) {
       const suitMap: { [key: string]: string } = {
-        '0': 'D', // Diamonds
-        '1': 'C', // Clubs
-        '2': 'H', // Hearts
-        '3': 'S', // Spades
+        '1': 'D', // Diamonds
+        '2': 'C', // Clubs
+        '3': 'H', // Hearts
+        '4': 'S', // Spades
       };
 
       suitLetter = suitMap[suitParam];
@@ -42,23 +42,23 @@ function LandingContent() {
 
     // Map Rank
     let rankLetter = '';
-    
+
     if (!isJoker) {
-        // Check if it's a digit 1-9
-        if (/^[1-9]$/.test(rankParam)) {
+      // Check if it's a digit 1-9
+      if (/^[1-9]$/.test(rankParam)) {
         rankLetter = rankParam === '1' ? 'A' : rankParam;
-        } else {
+      } else {
         // Handle a-d
         switch (rankParam.toLowerCase()) {
-            case 'a': rankLetter = '0'; break; // 10
-            case 'b': rankLetter = 'J'; break; // 11
-            case 'c': rankLetter = 'Q'; break; // 12
-            case 'd': rankLetter = 'K'; break; // 13
-            default:
+          case 'a': rankLetter = '0'; break; // 10
+          case 'b': rankLetter = 'J'; break; // 11
+          case 'c': rankLetter = 'Q'; break; // 12
+          case 'd': rankLetter = 'K'; break; // 13
+          default:
             setError('Invalid card data.');
             return;
         }
-        }
+      }
     }
 
     // Construct URL
@@ -68,7 +68,7 @@ function LandingContent() {
     } else {
       url = `https://deckofcardsapi.com/static/img/${rankLetter}${suitLetter}.png`;
     }
-    
+
     setImageUrl(url);
 
   }, [router]);

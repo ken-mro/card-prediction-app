@@ -25,17 +25,17 @@ export default function Login() {
 
     // Parse Rank first to check for Joker
     const rank = parseInt(rankChar, 16);
-    
+
     // Valid ranks: 1-9, a-d (10-13), e (14 - Joker)
     if (isNaN(rank) || rank < 1 || rank > 14) {
-       setError('Incorrect username or password.');
-       return;
+      setError('Incorrect username or password.');
+      return;
     }
 
     // Validate Suit ONLY if not Joker (rank 14)
     if (rank !== 14) {
       const suit = parseInt(suitChar, 10);
-      if (isNaN(suit) || suit < 0 || suit > 3) {
+      if (isNaN(suit) || suit < 1 || suit > 4) {
         setError('Incorrect username or password.');
         return;
       }
